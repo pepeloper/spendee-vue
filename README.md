@@ -1,24 +1,11 @@
-# new-spendee
+# :money_with_wings: Spendee
 
-## Project setup
-```
-yarn install
-```
+:wave: Hola!
 
-### Compiles and hot-reloads for development
-```
-yarn serve
-```
+Este repo es parte de un taller de Vue.js, aquí podrás encontrar el proyecto en Vue.js.
 
-### Compiles and minifies for production
-```
-yarn build
-```
+:repeat: Las ramas están organizadas siguiendo los pasos del fichero de Notion, así que si en algún momento de pierdes puedes tirar de la chuleta!
 
-### Lints and fixes files
-```
-yarn lint
-```
+:clipboard: [Notion de referencia para poder ir paso a paso](https://www.notion.so/pepeloper/Spendee-5765f5cc72914e25acc3b79c102a85d7)
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+:truck: [Proyecto HTML con la estructura base](https://github.com/pepeloper/spendee-html)
