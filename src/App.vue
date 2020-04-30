@@ -94,8 +94,11 @@
       <div class="mt-8 flex justify-between items-center">
         <span @click="resetForm" class="text-gray-500 border-b border-gray-500 text-sm leading-snug">Reset</span>
         <span class="inline-flex rounded-md shadow-sm">
-          <button type="button"
-            class="inline-flex items-center px-4 py-2 border border-transparent text-sm leading-5 font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition ease-in-out duration-150">
+          <button
+            @click="calculate"
+            type="button"
+            class="inline-flex items-center px-4 py-2 border border-transparent text-sm leading-5 font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition ease-in-out duration-150"
+          >
             Calculate
           </button>
         </span>
@@ -105,8 +108,7 @@
 
     <!-- results -->
     <div v-if="showResults" class="w-full md:max-w-xl border border-gray-200 bg-white py-4 md:py-6 px-5 md:px-8 text-gray-800 md:rounded-md shadow-md mt-8">
-      <!-- Will use justify-between if it has tip, justify-center if not -->
-      <div class="mt-5 flex items-center justify-between">
+      <div class="mt-5 flex items-center" :class="{ 'justify-between': form.tip, 'justify-center': !form.tip }">
         <!-- pay per person -->
         <div class="w-1/3 flex flex-col items-center">
           <svg class="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -114,38 +116,38 @@
               d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
           </svg>
           <div class="text-gray-600 flex flex-col items-center">
-            <span class="text-gray-600 font-bold text-xl md:text-4xl leading-snug">14€</span>
+            <span class="text-gray-600 font-bold text-xl md:text-4xl leading-snug">{{ toPayEachOne }}€</span>
             <span class="text-sm">each one</span>
           </div>
         </div>
         <!-- pay per person -->
 
-        <span class="text-gray-600 text-2xl">+</span>
+        <span v-if="form.tip" class="text-gray-600 text-2xl">+</span>
 
         <!-- tip per person -->
-        <div class="w-1/3 flex flex-col items-center">
+        <div v-if="form.tip" class="w-1/3 flex flex-col items-center">
           <svg class="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
               d="M14.121 15.536c-1.171 1.952-3.07 1.952-4.242 0-1.172-1.953-1.172-5.119 0-7.072 1.171-1.952 3.07-1.952 4.242 0M8 10.5h4m-4 3h4m9-1.5a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
 
           <div class="text-gray-600 flex flex-col items-center">
-            <span class="text-gray-600 font-bold text-xl md:text-4xl leading-snug">5€</span>
+            <span class="text-gray-600 font-bold text-xl md:text-4xl leading-snug">{{ toTipEachOne }}€</span>
             <span class="text-sm">tip</span>
           </div>
         </div>
         <!-- tip per person -->
 
-        <span class="text-gray-600 text-2xl">=</span>
+        <span v-if="form.tip" class="text-gray-600 text-2xl">=</span>
 
         <!-- total per person -->
-        <div class="w-1/3 flex flex-col items-center">
+        <div v-if="form.tip" class="w-1/3 flex flex-col items-center">
            <svg class="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
               d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
           <div class="text-gray-600 flex flex-col items-center">
-            <span class="text-gray-600 font-bold text-xl md:text-4xl leading-snug">19€</span>
+            <span class="text-gray-600 font-bold text-xl md:text-4xl leading-snug">{{ totalToPay }}€</span>
             <span class="text-sm">total</span>
           </div>
         </div>
@@ -156,6 +158,8 @@
   </div>
 </template>
 <script>
+import currency from 'currency.js'
+
 export default {
   name: "App",
 
@@ -173,7 +177,27 @@ export default {
         { label: '10%', value: '10' },
         { label: '15%', value: '15' },
         { label: '20%', value: '20' },
-      ],
+      ]
+    }
+  },
+
+  computed: {
+    toPayEachOne() {
+      const [ toPay ] = currency(this.form.amount).distribute(this.form.people)
+      return toPay.value
+    },
+
+    totalTip() {
+      return (this.form.tipAmount / 100 ) * Number(this.form.amount)
+    },
+
+    toTipEachOne() {
+      const [ toTip ] = currency(this.totalTip).distribute(this.form.people)
+      return toTip.value
+    },
+
+    totalToPay() {
+      return currency(this.toPayEachOne).add(this.toTipEachOne).value
     }
   },
 
@@ -197,6 +221,11 @@ export default {
       this.form.people = 1
       this.form.tip = false
       this.form.tipAmount = null
+      this.showResults = false
+    },
+
+    calculate() {
+      this.showResults = true
     },
   }
 };
@@ -205,7 +234,6 @@ export default {
   .background {
     background: white;
   }
-
   @media (min-width: 768px) {
     .background {
       background: url(/assets/images/background.jpeg);
