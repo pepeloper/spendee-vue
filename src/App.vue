@@ -3,9 +3,7 @@
     <div class="mt-0 md:mt-48 w-full md:max-w-xl border border-gray-200 bg-white py-4 md:py-6 px-5 md:px-8 text-gray-800 md:rounded-md md:shadow-md">
       <!-- card header -->
       <div class="flex justify-between items-center">
-        <h1 class="text-3xl text-gray-800">💸 Spendee
-
-        </h1>
+        <h1 class="text-3xl text-gray-800">💸 Spendee</h1>
       </div>
       <!-- card header -->
 
@@ -20,7 +18,7 @@
                 $
               </span>
             </div>
-            <input id="amount" class="form-input w-full pl-8 pr-12 sm:text-sm" placeholder="0.00"
+            <input v-model="form.amount" id="amount" class="form-input w-full pl-8 pr-12 sm:text-sm" placeholder="0.00"
               aria-describedby="price-currency" />
             <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
               <span class="text-gray-500 sm:text-sm" id="price-currency">
@@ -43,9 +41,7 @@
               </svg>
             </button>
             <div class="relative flex-grow focus-within:z-20">
-              <input id="people"
-                class="text-center form-input w-full rounded-none text-sm"
-                placeholder="1" />
+              <input id="people" v-model="form.people" class="text-center form-input w-full rounded-none text-sm" placeholder="1" />
             </div>
             <button class="-ml-px relative px-4 py-2 border border-gray-300 rounded-r-md text-gray-700 focus:outline-none focus:shadow-outline-blue focus:border-blue-300">
               <svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -65,13 +61,13 @@
         <div class="w-full md:w-1/2 md:pr-8">
           <div class="flex items-center justify-center md:justify-start">
             <label class="inline-block text-sm font-medium text-gray-700" for="tip">Do you want to tip?</label>
-            <input type="checkbox" id="tip" name="tip" checked class="form-checkbox ml-2 h-4 w-4 text-indigo-600 transition duration-150 ease-in-out">
+            <input v-model="form.tip" type="checkbox" id="tip" name="tip" checked class="form-checkbox ml-2 h-4 w-4 text-indigo-600 transition duration-150 ease-in-out">
           </div>
         </div>
         <!-- tip -->
 
         <!-- tip percentage -->
-        <div class="w-full md:w-1/2 md:pl-8 mt-5 md:mt-0">
+        <div v-show="form.tip" class="w-full md:w-1/2 md:pl-8 mt-5 md:mt-0">
           <span class="w-full relative z-0 inline-flex shadow-sm">
             <button type="button"
               class="relative flex items-center justify-center inline-flex items-center w-1/4 py-2 rounded-l-md border border-gray-300 bg-white text-sm leading-5 font-medium text-gray-700 hover:text-gray-500 focus:z-10 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-100 active:text-gray-700 transition ease-in-out duration-150">
@@ -109,7 +105,7 @@
     </div>
 
     <!-- results -->
-    <div class="w-full md:max-w-xl border border-gray-200 bg-white py-4 md:py-6 px-5 md:px-8 text-gray-800 md:rounded-md shadow-md mt-8">
+    <div v-if="showResults" class="w-full md:max-w-xl border border-gray-200 bg-white py-4 md:py-6 px-5 md:px-8 text-gray-800 md:rounded-md shadow-md mt-8">
       <!-- Will use justify-between if it has tip, justify-center if not -->
       <div class="mt-5 flex items-center justify-between">
         <!-- pay per person -->
@@ -163,6 +159,18 @@
 <script>
 export default {
   name: "App",
+
+  data() {
+    return {
+      form: {
+        amount: 0,
+        people: 1,
+        tip: false,
+        tipAmount: '',
+      },
+      showResults: false,
+    }
+  },
 };
 </script>
 <style>
